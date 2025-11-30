@@ -29,8 +29,8 @@ The settings are divided into 4 core classes:
    - Override the environment variables in code if static
 
 The settings setup allows for us to easily set the current environment by declaring `ENV_STATE=` and then we can declare all of our environment variables with the appropriate prefix (DEV, TEST, PROD). This has numerous benefits:  
- 1. We explicitly declare our environment. No confusion.
- 2. We explicitly declare our variables with the correct prefix. Ex. DEV_DATABASE_URL. No confusion.
+ 1. We explicitly declare our environment. Ex. `ENV_STATE=DEV`
+ 2. We explicitly declare our variables with the correct prefix. Ex. `DEV_DATABASE_URL`
  3. We can overwrite variables for specific environment. Ex. Hardcoding DATABASE_URL in TestConfig with a sqlite database.
 
 ## Logger
