@@ -52,6 +52,22 @@ class GlobalConfig(BaseConfig):
     OPEN_TELEMETRY_AUTHORIZATION_TOKEN: Optional[str] = None
     OPEN_TELEMETRY_FLAG: bool = False
 
+    # AWS Secrets Manager settings
+    AWS_ACCESS_KEY_ID: Optional[str] = None
+    AWS_SECRET_ACCESS_KEY: Optional[str] = None
+    AWS_SESSION_TOKEN: Optional[str] = None  # For temporary credentials
+    AWS_REGION: Optional[str] = None  # Defaults to boto3's default region chain
+
+    # Azure Key Vault settings (for secret manager access)
+    AZURE_CLIENT_ID: Optional[str] = None
+    AZURE_CLIENT_SECRET: Optional[str] = None
+    AZURE_TENANT_ID: Optional[str] = None
+    AZURE_KEY_VAULT_URL: Optional[str] = None
+
+    # GCP Secret Manager settings
+    GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = None
+    GOOGLE_CLOUD_PROJECT: Optional[str] = None
+
 
 class DevConfig(GlobalConfig):
     LOG_LEVEL: str = "DEBUG"  # Overrides the global LOG_LEVEL
