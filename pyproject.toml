@@ -19,6 +19,7 @@ dependencies = [
     "pytest-xdist>=3.8.0",
     "rich>=14.2.0",
     "ruff>=0.14.4",
+    "structlog>=25.5.0",
 ]
 
 [tool.pytest.ini_options]
