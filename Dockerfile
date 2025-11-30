@@ -23,7 +23,7 @@ RUN useradd -m -u 1000 appuser && \
 
 # Copy dependency files first for better caching
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --compile-bytecode && \
+RUN uv sync --frozen --no-dev --compile-bytecode && \
     chown -R appuser:appuser /app
 
 # Copy application code
@@ -35,4 +35,4 @@ USER appuser
 # Make sure to expose for OpenTelemetry gRPC port
 EXPOSE 4137
 
-CMD ["uv", "run", "--", "python", "-m", "src.main"]
+CMD ["uv", "run", "--", "python", "-m", "main"]

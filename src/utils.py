@@ -2,8 +2,6 @@ import logging
 import time
 from functools import wraps
 
-from src.exceptions import PIPELINE_EXCEPTIONS
-
 logger = logging.getLogger(__name__)
 
 
@@ -16,8 +14,6 @@ def retry(attempts: int = 3, delay: float = 0.25, backoff: float = 2.0):
                 try:
                     return fn(*args, **kwargs)
                 except Exception as e:
-                    if type(e) in PIPELINE_EXCEPTIONS:
-                        raise e
                     if i == attempts - 1:
                         raise e
                     logger.warning(

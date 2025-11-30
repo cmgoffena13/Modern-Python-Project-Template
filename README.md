@@ -1,11 +1,16 @@
-# Modern Python Project Example
+# Modern Python Project Template
 
 Example Python Project showcasing best practices in configuration, logging, testing, and continuous integration.
+
+## Development Setup
+
+ 1. Utilize `uv` to sync packages: `uv sync` or utilize the Make command `setup`
+ 2. Install pre-commit hooks `uv run -- pre-commit install --install-hooks`
 
 ## Main Packages
  - Ruff
  - Pydantic-Settings
- - Pytest
+ - Pytest (Pytest-Xdist for parallel tests)
  - Pre-Commit
  - Logger
    - OpenTelemetry Packages
