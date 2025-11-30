@@ -1,6 +1,7 @@
 # Git
 .git
 .gitignore
+.gitkeep
 .gitattributes
 
 # Python
@@ -28,6 +29,7 @@ htmlcov/
 src/tests/
 
 # IDE
+.ruff_cache/
 .vscode/
 .idea/
 *.swp
@@ -35,8 +37,8 @@ src/tests/
 *~
 
 # Documentation
-README.md
 LICENSE
+!SECURITY.md
 *.md
 
 # Development tools
