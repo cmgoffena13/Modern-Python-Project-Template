@@ -1,38 +1,33 @@
-FROM python:3.12-slim-bookworm
-ENV PYTHONBUFFERED=1
+FROM python:3.12-slim-bookworm as build
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates && \
-    apt-get upgrade -y openssl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+ENV PYTHONBUFFERED=1 UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && apt-get upgrade -y openssl
 
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 
-ENV PATH="/root/.local/bin/:$PATH"
-ENV UV_LINK_MODE=copy
-
+ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /app
 
-# Create non-root user
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-
-# Copy dependency files first for better caching
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --compile-bytecode && \
-    chown -R appuser:appuser /app
+RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-install-project --no-dev
 
-# Copy application code
-COPY --chown=appuser:appuser . .
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev
 
-# Switch to non-root user
+RUN groupadd -r appuser && useradd --no-log-init -r -g appuser appuser && \
+    chown -R appuser:appuser /app /root/.cache/uv
+
+FROM python:3.12-slim-bookworm as runtime
+WORKDIR /app
+COPY --from=build /app /app
+ENV PATH="/root/.local/bin:$PATH"
+
+RUN chown -R appuser:appuser /app
 USER appuser
 
 # Make sure to expose for OpenTelemetry gRPC port
 EXPOSE 4137
 
-CMD ["uv", "run", "--", "python", "-m", "main"]
+CMD ["uv", "run", "--", "python", "main.py"]
