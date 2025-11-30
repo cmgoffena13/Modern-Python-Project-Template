@@ -12,7 +12,7 @@ Example Python Project showcasing best practices in configuration, logging, test
  - Pydantic-Settings
  - Pytest (Pytest-Xdist for parallel tests)
  - Pre-Commit
- - Logger
+ - Logger (StructLog)
    - OpenTelemetry Packages
 
 ## Settings
