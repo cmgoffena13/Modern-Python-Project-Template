@@ -15,6 +15,24 @@ Example Python Project showcasing best practices in configuration, logging, test
  - Logger
    - OpenTelemetry Packages
 
+## Settings
+
+The settings are divided into 4 core classes:  
+ - Global Config
+   - Holds all environment variables and their defaults
+   - Allows for easy overwrites for the other environments
+ - Dev Config
+   - Override the environment variables in code if static
+ - Test Config
+   - Override the environment variables in code if static
+ - Prod Config
+   - Override the environment variables in code if static
+
+The settings setup allows for us to easily set the current environment by declaring `ENV_STATE=` and then we can declare all of our environment variables with the appropriate prefix (DEV, TEST, PROD). This has numerous benefits:  
+ 1. We explicitly declare our environment. No confusion.
+ 2. We explicitly declare our variables with the correct prefix. Ex. DEV_DATABASE_URL. No confusion.
+ 3. We can overwrite variables for specific environment. Ex. Hardcoding DATABASE_URL in TestConfig with a sqlite database.
+
 ## Logger
 
 ### Logger Components
