@@ -14,5 +14,8 @@ setup:
 	uv sync --frozen --compile-bytecode
 	uv run -- pre-commit install --install-hooks
 
+upgrade:
+	uv sync --upgrade --all-extras
+
 run:
 	uv run -- python -m main
