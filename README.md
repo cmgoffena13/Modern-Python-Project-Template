@@ -65,7 +65,7 @@ The settings setup allows for us to easily set the current environment by declar
 ### Best Practices
  - Utilize `structlog` to create the Python logger. Ex. `logger = structlog.get_logger(__name__)`
     - This allows for flexible metadata injection. Ex. `logger.info("message", user_id="1235")`
- - Always name your logger utilizing the __name__ dunder method. This has the logger show up under the src directory and inherit from the src logger. Ex. __name__ shows up as `src.utils.py`
+ - Always name your logger utilizing the __name__ dunder method. This has the logger show up under the src directory and inherit from the src logger. Ex. __name__ shows up as `src.utils`
  - Utilize the correct logger level and choose key points in your code for INFO messages to help you understand the code flow.
  - Utilize OpenTelemetry traces to track individual processes. This is especially useful for code that executes in parallel. Ex. 
  ```
