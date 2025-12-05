@@ -24,7 +24,7 @@ def retry(attempts: int = 3, delay: float = 0.25, backoff: float = 2.0):
                     if index == attempts - 1:
                         raise e
                     logger.warning(
-                        f"Retrying {func.__name__} (attempt {index + 1}/{attempts}) after {type(e).__name__}: {e}"
+                        f"Retrying {func.__name__} (attempt {index + 2}/{attempts}) after {type(e).__name__}: {e}"
                     )
                     time.sleep(wait)
                     wait *= backoff
