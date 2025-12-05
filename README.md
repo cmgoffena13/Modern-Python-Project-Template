@@ -34,6 +34,10 @@ The settings setup allows for us to easily set the current environment by declar
  3. We can hardcode specific environment variables to declutter our .env file. Ex. Hardcoding DATABASE_URL in TestConfig to be a sqlite database.
  4. We can overwrite any configuration if needed through an environment variable. Ex. `PROD_LOG_LEVEL=DEBUG`
 
+## Settings (Secrets)
+
+The settings file is setup to allow for the use of a Cloud Secret Manager. For development, make sure the correct DEV_ environment variables are set for cloud authentication. Then any other environment variables can be secret names. Make sure to add the environment variable names to the `BaseConfig` that are secrets. 
+
 ## Logger
 
 ### Logger Components
@@ -62,7 +66,7 @@ The settings setup allows for us to easily set the current environment by declar
    - Application cannot continue
    - Example: Show that the database connection could not be created, unable to insert records
 
-### Best Practices
+### Logging Best Practices
  - Utilize `structlog` to create the Python logger. Ex. `logger = structlog.get_logger(__name__)`
     - This allows for flexible metadata injection. Ex. `logger.info("message", user_id="1235")`
  - Always name your logger utilizing the __name__ dunder method. This has the logger show up under the src directory and inherit from the src logger. Ex. __name__ shows up as `src.utils`
