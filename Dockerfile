@@ -28,5 +28,4 @@ WORKDIR /app
 COPY --from=builder --chown=appuser:appgroup /app /app
 
 USER appuser
-
 CMD ["python", "-m", "main"]
