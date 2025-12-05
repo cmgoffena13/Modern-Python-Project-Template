@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.12
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-bookworm-slim AS builder
 
-ENV PYTHONUNBUFFERED=1 UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1 UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
+ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1 UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
 
 WORKDIR /app
 
@@ -28,4 +28,4 @@ WORKDIR /app
 COPY --from=builder --chown=appuser:appgroup /app /app
 
 USER appuser
-CMD ["python", "-m", "main"]
+CMD ["python", "main.py"]
