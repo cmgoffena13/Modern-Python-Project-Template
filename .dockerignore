@@ -49,8 +49,8 @@ ruff.toml
 
 # Environment files
 .env
-.env.*
 !.env.example
+.env.*
 
 # CI/CD (not needed in image)
 .github/
