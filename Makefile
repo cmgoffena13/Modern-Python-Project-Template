@@ -18,4 +18,4 @@ upgrade:
 	uv sync --upgrade --all-extras
 
 run:
-	uv run -- python -m main
+	uv run main.py
