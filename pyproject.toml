@@ -27,6 +27,9 @@ pythonpath = [ "." ]
 [tool.ruff]
 lint.select = ["I"]
 
+[project.scripts]
+cli = "src.cli.main:main"
+
 [dependency-groups]
 dev = [
     "pre-commit>=4.4.0",
