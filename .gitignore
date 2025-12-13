@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# JSON (JSON has no place here) - GCP Credentials, etc.
+*.json
+
 # C extensions
 *.so
 
