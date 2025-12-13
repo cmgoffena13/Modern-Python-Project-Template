@@ -7,9 +7,50 @@ Example Python Project showcasing best practices in configuration, logging, test
  1. Utilize `uv` to sync packages: `uv sync` or utilize the Make command `setup`
  2. Install pre-commit hooks `uv run -- pre-commit install --install-hooks`
 
+## Considerations
+ - Logging
+   - OpenTelemetry setup (can utilize tracers for logical grouping)
+   - StructLog (inject variables into log messages for easy log filtering)
+ - Settings Management
+   - Environment declaration for logical grouping
+   - Sensitive secrets in cloud secret manager
+ - Testing
+   - Organize test data in fixtures directory
+   - Conftest to hold universal test fixtures
+   - Test file 1:1 with feature/component
+   - Utilize pytest-xdist for parallel test execution
+ - Code Organization
+   - Processor
+      - 1:1 with entrypoint, destination connection / source connection
+      - Enables parallel execution of pipelines and shared resources (connection pooling)
+      - Central place to aggregate pipeline results (to avoid alert fatigue)
+   - PipelineRunner
+      - Pipeline Blueprint
+      - Enables Factory Pattern to swap key components for flexibility
+      - Core Components
+         - Read
+         - Parse/Transform/Validate (Optional)
+         - Write
+         - Audit
+         - Publish
+   - Sources (configuration)
+      - 1:1 with source and specifics (endpoint, table, file etc.)
+      - Contains a SQLModel(s) which holds:
+         - Schema Blueprint
+         - Data Contract (validation rules)
+      - Store configurations in one central registry
+      - Use pydantic / sqlmodel to ensure type-safe source configuration
+   - Utility Functions
+      - `utils`: generic code functions; Secret manager, retry, etc.
+      - `db_utils`: generic database functions; etl hash, create table, drop table, etc.
+      - `model_utils`: generic functions interacting with pydantic models
+
 ## Main Packages
  - Ruff
  - Pydantic-Settings
+ - Pydantic-Extra-Types
+ - SQLModel
+ - SQLAlchemy
  - Pytest (Pytest-Xdist for parallel tests)
  - Pre-Commit
  - Logger (StructLog)
@@ -80,3 +121,4 @@ The settings file is setup to allow for the use of a Cloud Secret Manager. For d
  with tracer.start_as_current_span("tracer name"):
     trigger_process()
  ```
+
