@@ -51,6 +51,7 @@ Example Python Project showcasing best practices in configuration, logging, test
  - Pydantic-Extra-Types
  - SQLModel
  - SQLAlchemy
+ - Typer
  - Pytest (Pytest-Xdist for parallel tests)
  - Pre-Commit
  - Logger (StructLog)
