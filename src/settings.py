@@ -1,11 +1,20 @@
 import os
+from enum import Enum
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import model_validator
+from pydantic import HttpUrl, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.utils import aws_secret_helper, azure_secret_helper, gcp_secret_helper
+
+
+class LogLevel(str, Enum):
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
 
 
 class BaseConfig(BaseSettings):
@@ -45,10 +54,10 @@ class BaseConfig(BaseSettings):
 
 # Store all environment variables that can be accessed globally
 class GlobalConfig(BaseConfig):
-    LOG_LEVEL: str = "INFO"
+    LOG_LEVEL: LogLevel = "INFO"
     OTEL_PYTHON_LOG_CORRELATION: Optional[bool] = None
-    OPEN_TELEMETRY_TRACE_ENDPOINT: Optional[str] = None
-    OPEN_TELEMETRY_LOG_ENDPOINT: Optional[str] = None
+    OPEN_TELEMETRY_TRACE_ENDPOINT: Optional[HttpUrl] = None
+    OPEN_TELEMETRY_LOG_ENDPOINT: Optional[HttpUrl] = None
     OPEN_TELEMETRY_AUTHORIZATION_TOKEN: Optional[str] = None
     OPEN_TELEMETRY_FLAG: bool = False
 
@@ -70,21 +79,21 @@ class GlobalConfig(BaseConfig):
 
 
 class DevConfig(GlobalConfig):
-    LOG_LEVEL: str = "DEBUG"  # Overrides the global LOG_LEVEL
+    LOG_LEVEL: LogLevel = "DEBUG"  # Overrides the global LOG_LEVEL
     OTEL_PYTHON_LOG_CORRELATION: bool = False
 
     model_config = SettingsConfigDict(env_prefix="DEV_")
 
 
 class TestConfig(GlobalConfig):
-    LOG_LEVEL: str = "DEBUG"
+    LOG_LEVEL: LogLevel = "DEBUG"
     OTEL_PYTHON_LOG_CORRELATION: bool = False
 
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
 
 class ProdConfig(GlobalConfig):
-    LOG_LEVEL: str = "WARNING"
+    LOG_LEVEL: LogLevel = "WARNING"
     OTEL_PYTHON_LOG_CORRELATION: bool = True
     OPEN_TELEMETRY_FLAG: bool = True
 
