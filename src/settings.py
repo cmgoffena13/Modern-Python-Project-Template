@@ -1,20 +1,13 @@
 import os
-from enum import Enum
 from functools import lru_cache
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import HttpUrl, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.utils import aws_secret_helper, azure_secret_helper, gcp_secret_helper
 
-
-class LogLevel(str, Enum):
-    DEBUG = "DEBUG"
-    INFO = "INFO"
-    WARNING = "WARNING"
-    ERROR = "ERROR"
-    CRITICAL = "CRITICAL"
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class BaseConfig(BaseSettings):
