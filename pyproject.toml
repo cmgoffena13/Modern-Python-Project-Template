@@ -11,6 +11,7 @@ dependencies = [
     "google-cloud-secret-manager>=2.25.0",
     "opentelemetry-exporter-otlp-proto-http>=1.38.0",
     "opentelemetry-sdk>=1.38.0",
+    "pendulum>=3.1.0",
     "pydantic>=2.12.4",
     "pydantic-extra-types[pendulum]>=2.10.6",
     "pydantic-settings>=2.12.0",
