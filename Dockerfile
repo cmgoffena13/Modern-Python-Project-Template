@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.12
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-bookworm-slim AS builder
 
-ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1 UV_NO_DEV=1 UV_PYTHON_DOWNLOADS=never
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ FROM python:${PYTHON_VERSION}-slim-bookworm AS runtime
 RUN groupadd -r appgroup &&  \
     useradd -r -g appgroup appuser
 
-ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 UV_PYTHON_DOWNLOADS=never
+ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
