@@ -84,6 +84,8 @@ def azure_secret_helper(value: str) -> str:
     client = SecretClient(vault_url=vault_url, credential=credential)
     try:
         secret_value = client.get_secret(value).value
+        if secret_value is None:
+            raise ValueError(f"Azure secret {value} has no value")
         logger.debug(f"Fetched secret from Azure Key Vault: {value}")
         return secret_value
     except Exception as e:

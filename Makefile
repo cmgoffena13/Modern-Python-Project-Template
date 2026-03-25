@@ -3,13 +3,14 @@ format: lint
 
 lint:
 	uv run -- ruff check --fix
+	uv run -- ty check
 
 test:
 	uv run -- pytest -v -n auto
 
 install:
-	uv sync --frozen --compile-bytecode --all-extras
-	uv run -- pre-commit install --install-hooks
+	uv sync --all-extras
+	uv run -- prek install -f -t pre-commit -t pre-push
 
 upgrade:
 	uv sync --upgrade --all-extras
