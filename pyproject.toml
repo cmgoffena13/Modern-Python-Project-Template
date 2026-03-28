@@ -11,15 +11,9 @@ dependencies = [
     "google-cloud-secret-manager>=2.25.0",
     "opentelemetry-exporter-otlp-proto-http>=1.38.0",
     "opentelemetry-sdk>=1.38.0",
-    "pendulum>=3.1.0",
-    "pydantic>=2.12.4",
-    "pydantic-extra-types[pendulum]>=2.10.6",
     "pydantic-settings>=2.12.0",
     "rich>=14.2.0",
-    "sqlmodel>=0.0.27",
     "structlog>=25.5.0",
-    "ty>=0.0.25",
-    "typer>=0.20.0",
 ]
 
 [tool.pytest.ini_options]
@@ -35,5 +29,5 @@ dev = [
     "pytest>=9.0.1",
     "pytest-xdist>=3.8.0",
     "ruff>=0.14.4",
-    "scalene>=1.5.55",
+    "ty>=0.0.26",
 ]

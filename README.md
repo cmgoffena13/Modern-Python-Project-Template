@@ -5,7 +5,7 @@ Example Python Project showcasing best practices in configuration, logging, test
 ## Development Setup
 
  1. Utilize `uv` to sync packages: `uv sync` or utilize the Make command `install`
- 2. Install pre-commit hooks `uv run -- pre-commit install --install-hooks`
+ 2. Install pre-commit hooks `uv run -- prek install`
 
 ## Considerations
  - Logging
@@ -19,41 +19,13 @@ Example Python Project showcasing best practices in configuration, logging, test
    - Conftest to hold universal test fixtures
    - Test file 1:1 with feature/component
    - Utilize pytest-xdist for parallel test execution
- - Code Organization
-   - Processor
-      - 1:1 with entrypoint, destination connection / source connection
-      - Enables parallel execution of pipelines and shared resources (connection pooling)
-      - Central place to aggregate pipeline results (to avoid alert fatigue)
-   - PipelineRunner
-      - Pipeline Blueprint
-      - Enables Factory Pattern to swap key components for flexibility
-      - Core Components
-         - Read
-         - Parse/Transform/Validate (Optional)
-         - Write
-         - Audit
-         - Publish
-   - Sources (configuration)
-      - 1:1 with source and specifics (endpoint, table, file etc.)
-      - Contains a SQLModel(s) which holds:
-         - Schema Blueprint
-         - Data Contract (validation rules)
-      - Store configurations in one central registry
-      - Use pydantic / sqlmodel to ensure type-safe source configuration
-   - Utility Functions
-      - `utils`: generic code functions; Secret manager, retry, etc.
-      - `db_utils`: generic database functions; etl hash, create table, drop table, etc.
-      - `model_utils`: generic functions interacting with pydantic models
 
 ## Main Packages
  - Ruff
  - Pydantic-Settings
- - Pydantic-Extra-Types
- - SQLModel
- - SQLAlchemy
- - Typer
  - Pytest (Pytest-Xdist for parallel tests)
- - Pre-Commit
+ - Prek
+ - Ty
  - Logger (StructLog)
    - OpenTelemetry Packages
 

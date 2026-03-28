@@ -10,7 +10,7 @@ test:
 
 install:
 	uv sync --all-extras
-	uv run -- prek install -f -t pre-commit -t pre-push
+	uv run -- prek install
 
 upgrade:
 	uv sync --upgrade --all-extras
