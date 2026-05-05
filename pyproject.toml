@@ -21,7 +21,15 @@ testpaths = [ "src/tests" ]
 pythonpath = [ "." ]
 
 [tool.ruff]
-lint.extend-select = ["I", "B"]
+target-version = "py312"
+lint.extend-select = [
+    "I",     # Imports
+    "B",     # Bandit
+    "PTH",   # Pathlib
+    "ARG",   # Unused Args
+    "C4",    # Force Current List Comprehensions
+    "RET"    # Return Checks
+]
 
 [dependency-groups]
 dev = [

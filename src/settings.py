@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import HttpUrl, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,7 +11,7 @@ LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class BaseConfig(BaseSettings):
-    ENV_STATE: Optional[str] = None
+    ENV_STATE: str | None = None
 
     @classmethod
     def _get_secret_field_mapping(cls):
@@ -48,27 +48,27 @@ class BaseConfig(BaseSettings):
 # Store all environment variables that can be accessed globally
 class GlobalConfig(BaseConfig):
     LOG_LEVEL: LogLevel = "INFO"
-    OTEL_PYTHON_LOG_CORRELATION: Optional[bool] = None
-    OPEN_TELEMETRY_TRACE_ENDPOINT: Optional[HttpUrl] = None
-    OPEN_TELEMETRY_LOG_ENDPOINT: Optional[HttpUrl] = None
-    OPEN_TELEMETRY_AUTHORIZATION_TOKEN: Optional[str] = None
+    OTEL_PYTHON_LOG_CORRELATION: bool | None = None
+    OPEN_TELEMETRY_TRACE_ENDPOINT: HttpUrl | None = None
+    OPEN_TELEMETRY_LOG_ENDPOINT: HttpUrl | None = None
+    OPEN_TELEMETRY_AUTHORIZATION_TOKEN: str | None = None
     OPEN_TELEMETRY_FLAG: bool = False
 
     # AWS Secrets Manager settings
-    AWS_ACCESS_KEY_ID: Optional[str] = None
-    AWS_SECRET_ACCESS_KEY: Optional[str] = None
-    AWS_SESSION_TOKEN: Optional[str] = None  # For temporary credentials
-    AWS_REGION: Optional[str] = None  # Defaults to boto3's default region chain
+    AWS_ACCESS_KEY_ID: str | None = None
+    AWS_SECRET_ACCESS_KEY: str | None = None
+    AWS_SESSION_TOKEN: str | None = None  # For temporary credentials
+    AWS_REGION: str | None = None  # Defaults to boto3's default region chain
 
     # Azure Key Vault settings (for secret manager access)
-    AZURE_CLIENT_ID: Optional[str] = None
-    AZURE_CLIENT_SECRET: Optional[str] = None
-    AZURE_TENANT_ID: Optional[str] = None
-    AZURE_KEY_VAULT_URL: Optional[str] = None
+    AZURE_CLIENT_ID: str | None = None
+    AZURE_CLIENT_SECRET: str | None = None
+    AZURE_TENANT_ID: str | None = None
+    AZURE_KEY_VAULT_URL: str | None = None
 
     # GCP Secret Manager settings
-    GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = None
-    GOOGLE_CLOUD_PROJECT: Optional[str] = None
+    GOOGLE_APPLICATION_CREDENTIALS: str | None = None
+    GOOGLE_CLOUD_PROJECT: str | None = None
 
 
 class DevConfig(GlobalConfig):
@@ -93,7 +93,7 @@ class ProdConfig(GlobalConfig):
     model_config = SettingsConfigDict(env_prefix="PROD_")
 
 
-@lru_cache()
+@lru_cache
 def get_config(env_state: str):
     if not env_state:
         raise ValueError("ENV_STATE is not set. Possible values are: DEV, TEST, PROD")

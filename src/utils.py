@@ -29,6 +29,8 @@ def retry(attempts: int = 3, delay: float = 0.25, backoff: float = 2.0):
                     time.sleep(wait)
                     wait *= backoff
 
+            raise ValueError("Attempts must be greater than 0")
+
         return wrapper
 
     return decorator
