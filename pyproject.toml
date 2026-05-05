@@ -21,7 +21,7 @@ testpaths = [ "src/tests" ]
 pythonpath = [ "." ]
 
 [tool.ruff]
-lint.select = ["I"]
+lint.extend-select = ["I", "B"]
 
 [dependency-groups]
 dev = [
