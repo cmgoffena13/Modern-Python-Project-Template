@@ -23,9 +23,17 @@ pythonpath = [ "." ]
 [tool.ruff]
 target-version = "py312"
 lint.extend-select = [
-    "I",     # Imports
+    "A",     # Builtins
+    "AIR",   # Optional: Airflow
+    "FAST",  # Optional: FastApi
+    "DTZ",   # Datetime
+    "SIM",   # Simplify
+    "I",     # Isort Imports
     "S",     # Bandit
+    "PT",    # Pytest
     "B",     # BugBear
+    "N",     # Naming Conventions
+    "RUF",   # Ruff Specific Rules
     "PTH",   # Pathlib
     "ARG",   # Unused Args
     "C4",    # Force Current List Comprehensions
