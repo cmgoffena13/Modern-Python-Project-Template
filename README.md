@@ -4,8 +4,7 @@ Example Python Project showcasing best practices in configuration, logging, test
 
 ## Development Setup
 
- 1. Utilize `uv` to sync packages: `uv sync` or utilize the Make command `install`
- 2. Install pre-commit hooks `uv run -- prek install`
+ 1. Utilize the Make command `install`
 
 ## Considerations
  - Logging
