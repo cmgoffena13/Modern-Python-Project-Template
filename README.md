@@ -4,7 +4,8 @@ Example Python Project showcasing best practices in configuration, logging, test
 
 ## Development Setup
 
- 1. Utilize the Make command `install`
+ 1. Make sure you have `uv` installed
+ 2. Utilize the Make command `install`
 
 ## Considerations
  - Logging
