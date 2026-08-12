@@ -1,15 +1,15 @@
+import logging
 import os
 import time
 from functools import wraps
 
 import boto3
-import structlog
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from botocore.exceptions import ClientError
 from google.cloud import secretmanager
 
-logger = structlog.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def retry(attempts: int = 3, delay: float = 0.25, backoff: float = 2.0):
@@ -22,9 +22,10 @@ def retry(attempts: int = 3, delay: float = 0.25, backoff: float = 2.0):
                     return func(*args, **kwargs)
                 except Exception as e:
                     if index == attempts - 1:
-                        raise e
+                        raise
                     logger.warning(
-                        f"Retrying {func.__name__} (attempt {index + 2}/{attempts}) after {type(e).__name__}: {e}"
+                        f"Retrying {func.__name__} (attempt {index + 2}/{attempts})"
+                        f" after {type(e).__name__}: {e}"
                     )
                     time.sleep(wait)
                     wait *= backoff
@@ -46,9 +47,7 @@ def aws_secret_helper(value: str) -> str:
             if secret_binary:
                 secret_value = secret_binary.decode("utf-8")
             else:
-                raise ValueError(
-                    f"AWS secret {value} has no SecretString or SecretBinary"
-                )
+                raise ValueError(f"AWS secret {value} has no SecretString or SecretBinary")
         logger.debug(f"Fetched secret from AWS Secrets Manager: {value}")
         return secret_value
     except ClientError as e:

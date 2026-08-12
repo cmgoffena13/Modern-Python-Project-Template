@@ -1,4 +1,4 @@
-ready: lint format type-check test
+ready: format lint type-check test
 
 format: 
 	uv run -- ruff format

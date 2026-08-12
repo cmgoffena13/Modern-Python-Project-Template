@@ -12,8 +12,6 @@ dependencies = [
     "opentelemetry-exporter-otlp-proto-http>=1.38.0",
     "opentelemetry-sdk>=1.38.0",
     "pydantic-settings>=2.12.0",
-    "rich>=14.2.0",
-    "structlog>=25.5.0",
 ]
 
 [tool.pytest.ini_options]
@@ -22,6 +20,8 @@ pythonpath = [ "." ]
 
 [tool.ruff]
 target-version = "py312"
+line-length = 100
+force-exclude = true
 lint.extend-select = [
     "A",     # Builtins
     "AIR",   # Optional: Airflow
@@ -37,11 +37,13 @@ lint.extend-select = [
     "PTH",   # Pathlib
     "ARG",   # Unused Args
     "C4",    # Force Current List Comprehensions
-    "RET"    # Return Checks
+    "RET",   # Return Checks
+    "E501",  # Line Too Long
+    "ANN401" # No 'Any'
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test_*.py" = ["S101"]
+"test_*.py" = ["S101"]  # Proper use of assert
 
 [dependency-groups]
 dev = [

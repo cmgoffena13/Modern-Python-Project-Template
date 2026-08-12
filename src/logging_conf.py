@@ -1,17 +1,30 @@
+import atexit
+import logging
 import warnings
 from logging.config import dictConfig
+from typing import Any
 
-import structlog
 from opentelemetry import trace
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from src.settings import config
+
+
+class TraceContextFilter(logging.Filter):
+    def filter(self, record):
+        span = trace.get_current_span()
+        ctx = span.get_span_context()
+        if ctx and ctx.is_valid:
+            record.trace_id = format(ctx.trace_id, "032x")
+            record.span_id = format(ctx.span_id, "016x")
+        return True
 
 
 def setup_logging():
@@ -22,75 +35,68 @@ def setup_logging():
         module="pydantic.main",
     )
 
-    structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.stdlib.render_to_log_kwargs,
-        ],
-        wrapper_class=structlog.stdlib.BoundLogger,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        cache_logger_on_first_use=True,
-    )
+    filters = {
+        "trace_context": {"()": TraceContextFilter},
+    }
 
-    # Setup OpenTelemetry tracing
-    tracer_provider = TracerProvider()
-    trace.set_tracer_provider(tracer_provider)
-
-    # Setup OpenTelemetry logging
-    logger_provider = LoggerProvider()
-    set_logger_provider(logger_provider)
+    handlers: dict[str, Any] = {
+        "default": {
+            "class": "logging.StreamHandler",
+            "level": config.LOG_LEVEL,
+            "formatter": "console",
+            "filters": ["trace_context"],
+        },
+    }
 
     if config.OPEN_TELEMETRY_FLAG:
-        # Setup OpenTelemetry tracing exporter
+        resource = Resource.create({"service.name": config.SERVICE_NAME})
+
+        tracer_provider = TracerProvider(resource=resource)
+        trace.set_tracer_provider(tracer_provider)
+
+        logger_provider = LoggerProvider(resource=resource)
+        set_logger_provider(logger_provider)
+
+        otel_headers = (
+            {"Authorization": config.OPEN_TELEMETRY_AUTHORIZATION_TOKEN}
+            if config.OPEN_TELEMETRY_AUTHORIZATION_TOKEN
+            else None
+        )
+
         trace_exporter = OTLPSpanExporter(
-            endpoint=config.OPEN_TELEMETRY_TRACE_ENDPOINT,
-            headers={"Authorization": config.OPEN_TELEMETRY_AUTHORIZATION_TOKEN},
+            endpoint=(
+                config.OPEN_TELEMETRY_TRACE_ENDPOINT.unicode_string()
+                if config.OPEN_TELEMETRY_TRACE_ENDPOINT
+                else None
+            ),
+            headers=otel_headers,
         )
-        trace_processor = BatchSpanProcessor(trace_exporter)
-        tracer_provider.add_span_processor(trace_processor)
+        tracer_provider.add_span_processor(BatchSpanProcessor(trace_exporter))
 
-        # Setup OpenTelemetry logging exporter
         log_exporter = OTLPLogExporter(
-            endpoint=config.OPEN_TELEMETRY_LOG_ENDPOINT,
-            headers={"Authorization": config.OPEN_TELEMETRY_AUTHORIZATION_TOKEN},
+            endpoint=(
+                config.OPEN_TELEMETRY_LOG_ENDPOINT.unicode_string()
+                if config.OPEN_TELEMETRY_LOG_ENDPOINT
+                else None
+            ),
+            headers=otel_headers,
         )
-        log_processor = BatchLogRecordProcessor(log_exporter)
-        logger_provider.add_log_record_processor(log_processor)
+        logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
+        atexit.register(tracer_provider.shutdown)
+        atexit.register(logger_provider.shutdown)
 
-        handlers = {
-            "default": {
-                "class": "rich.logging.RichHandler",
-                "level": config.LOG_LEVEL,
-                "formatter": "console",
-                "show_path": False,
-            },
-            "otel": {
-                "()": LoggingHandler,
-                "level": config.LOG_LEVEL,
-                "logger_provider": logger_provider,
-            },
-        }
-    else:
-        handlers = {
-            "default": {
-                "class": "rich.logging.RichHandler",
-                "level": config.LOG_LEVEL,
-                "formatter": "console",
-                "show_path": False,
-            },
+        handlers["otel"] = {
+            "()": LoggingHandler,
+            "level": config.LOG_LEVEL,
+            "logger_provider": logger_provider,
+            "filters": ["trace_context"],
         }
 
     formatters = {
         "console": {
             "class": "logging.Formatter",
             "datefmt": "%Y-%m-%dT%H:%M:%S",
-            "format": "%(name)s:%(lineno)d - %(message)s",
+            "format": "%(asctime)s - %(filename)s:%(funcName)s:%(lineno)d - %(message)s",
         }
     }
 
@@ -109,6 +115,7 @@ def setup_logging():
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": formatters,
+            "filters": filters,
             "handlers": handlers,
             "loggers": loggers,
         }
