@@ -1,4 +1,11 @@
-ready: format lint type-check test
+.PHONY: ready format lint type-check test test-cov install upgrade run
+
+install:
+	uv sync --all-extras
+	uv run -- prek install
+	cp .env.example .env
+
+ready: lint format type-check test-cov
 
 format: 
 	uv run -- ruff format
@@ -12,9 +19,8 @@ type-check:
 test:
 	uv run -- pytest -v -n auto
 
-install:
-	uv sync --all-extras
-	uv run -- prek install
+test-cov:
+	uv run -- pytest -v -n auto --cov=src --cov-report=term-missing
 
 upgrade:
 	uv sync --upgrade --all-extras
