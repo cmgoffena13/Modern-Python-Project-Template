@@ -11,7 +11,9 @@ dependencies = [
     "google-cloud-secret-manager>=2.25.0",
     "opentelemetry-exporter-otlp-proto-http>=1.38.0",
     "opentelemetry-sdk>=1.38.0",
+    "pydantic>=2.13.4",
     "pydantic-settings>=2.12.0",
+    "structlog>=26.1.0",
 ]
 
 [tool.pytest.ini_options]
@@ -27,6 +29,7 @@ fail_under = 90
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+# Honor exclude on pre-commit pass filenames
 force-exclude = true
 lint.extend-select = [
     "A",     # Builtins
@@ -60,3 +63,7 @@ dev = [
     "ruff>=0.14.4",
     "ty>=0.0.26",
 ]
+
+# Skip packages uploaded in the last 7 days (supply-chain cooldown).
+[tool.uv]
+exclude-newer = "7 days"

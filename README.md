@@ -1,97 +1,31 @@
 # Modern Python Project Template
 
-Example Python Project showcasing best practices in configuration, logging, testing, and continuous integration.
+Example Python Project showcasing best practices in configuration, logging, testing, and CI/CD.
 
-## Development Setup
+## Development Tools
+ - `uv`: manage python versions, package dependencies, and environments
+ - `ruff`: format code & lint code to enforce best practices
+ - `ty`: check type annotations, ensuring code is understandable
+ - `pytest`: run tests to prevent regressions
+ - `pytest-xdist`: run tests in parallel for speed improvements
+ - `pytest-cov`: allow for test coverage reporting
+ - `prek`: replacement of `pre-commit`; enforce formatting, linting, type-checking, and test runs on git commits
+ - `Makefile`: alias and chain commands together for easy development
+ - `pydantic`: validate data to ensure its in the correct format
+ - `pydantic-settings`: replacement of `python-dotenv`; validate settings values to ensure correct configuration
+ - `docker`: containerize code for reproducability and easy deployment
+ - `git`: track changes of codebase utilizing source control
+ - `structlog`: replacement of builtin `logging`; allows for key:value pairs to easily be logged
+ - `opentelemetry`: de-facto logging standard format; send logs anywhere
 
- 1. Make sure you have `uv` installed
- 2. Utilize the Make command `install`
-
-## Considerations
- - Logging
-   - OpenTelemetry setup (can utilize tracers for logical grouping)
-   - StructLog (inject variables into log messages for easy log filtering)
- - Settings Management
-   - Environment declaration for logical grouping
-   - Sensitive secrets in cloud secret manager
- - Testing
-   - Organize test data in fixtures directory
-   - Conftest to hold universal test fixtures
-   - Test file 1:1 with feature/component
-   - Utilize pytest-xdist for parallel test execution
-
-## Main Packages
- - Ruff
- - Pydantic-Settings
- - Pytest (Pytest-Xdist for parallel tests)
- - Prek
- - Ty
- - Logger (StructLog)
-   - OpenTelemetry Packages
-
-## Settings
-
-The settings are divided into 4 core classes:  
- - Global Config
-   - Holds all environment variables and their defaults
-   - Allows for easy overwrites for the other environments
- - Dev Config
-   - Override the environment variables in code if static
- - Test Config
-   - Override the environment variables in code if static
- - Prod Config
-   - Override the environment variables in code if static
-
-The settings setup allows for us to easily set the current environment by declaring `ENV_STATE=` and then we can declare all of our environment variables with the appropriate prefix (DEV, TEST, PROD). This has numerous benefits:  
- 1. We explicitly declare our environment to avoid confusion. Ex. `ENV_STATE=DEV`
- 2. We explicitly declare our environment variables with the correct prefix to avoid confusion. Ex. `DEV_DATABASE_URL`
- 3. We can hardcode specific environment variables to declutter our .env file. Ex. Hardcoding DATABASE_URL in TestConfig to be a sqlite database.
- 4. We can overwrite any configuration if needed through an environment variable. Ex. `PROD_LOG_LEVEL=DEBUG`
-
-## Settings (Secrets)
-
-The settings file is setup to allow for the use of a Cloud Secret Manager. For development, make sure the correct DEV_ environment variables are set for cloud authentication. Then any other environment variables can be secret names. Make sure to add the environment variable names to the `BaseConfig` that are secrets. 
-
-## Logger
-
-### Logger Components
- - Logger
-    - Creates the log messages, normally one per file
- - Handler
-    - Handlers determine the destination of the logs
- - Formatter
-    - Specifies the format of the log message itself
-
-### Logger Levels
- - DEBUG
-   - Show detailed information
-   - Example: Show record values that are inserted for every insert
-- INFO
-   - Normal operation events
-   - Example: Show that a batch of records was inserted
-- WARNING
-   - When something undesirable happens, but does not impact runtime
-   - Example: Show that there were no records available to insert, we expect records
-- ERROR
-   - When an exception occurs
-   - Example: Show that the batch insert failed with an exception
-   - NOTE: Use `logger.exception` as best practice to include the traceback when its unexpected
-- CRITICAL
-   - Application cannot continue
-   - Example: Show that the database connection could not be created, unable to insert records
-
-### Logging Best Practices
- - Utilize `structlog` to create the Python logger. Ex. `logger = structlog.get_logger(__name__)`
-    - This allows for flexible metadata injection. Ex. `logger.info("message", user_id="1235")`
- - Always name your logger utilizing the __name__ dunder method. This has the logger show up under the src directory and inherit from the src logger. Ex. __name__ shows up as `src.utils`
- - Utilize the correct logger level and choose key points in your code for INFO messages to help you understand the code flow.
- - Utilize OpenTelemetry traces to track individual processes. This is especially useful for code that executes in parallel. Ex. 
- ```
- from opentelemetry import trace
- 
- tracer = trace.get_tracer(__name__)
-  
- with tracer.start_as_current_span("tracer name"):
-    trigger_process()
- ```
-
+## Optional Development Tools
+ - `polars`: replacement of `pandas`; transform data quickly and efficiently
+ - `httpx2`: replacement of `requests`; send requests quickly and securely
+ - `sqlmodel`: replacement of `sqlalchemy` & `pydantic`; validate and mirror data/schemas against a database
+ - `fastapi`: replacement of `flask`; modern web framework
+ - `granian`: replacement of `gunicorn` / `uvicorn`; rust-based web server
+ - `orjson`: replacement of builtin `json`; serialize/deserialize json at lightning speeds
+ - `pendulum`: replacement of builtin `datetime`; easily work with times and dates
+ - `eventsourcing`: Python event sourcing library; time-aware storage of data
+ - `xxhash`: fast non-cryptographic hashing for data comparison
+ - `typer`: easy & simple CLI setup; prefer `argparse` if speed is needed
