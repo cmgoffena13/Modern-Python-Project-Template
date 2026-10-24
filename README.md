@@ -29,3 +29,10 @@ Example Python Project showcasing best practices in configuration, logging, test
  - `eventsourcing`: Python event sourcing library; time-aware storage of data
  - `xxhash`: fast non-cryptographic hashing for data comparison
  - `typer`: easy & simple CLI setup; prefer `argparse` if speed is needed
+
+## Resources
+
+ - [Semantic Versioning](https://semver.org/)
+ - [Conventional Commits](https://www.conventionalcommits.org/en)
+ - [Twelve-Factor App](https://12factor.net/)
+ - [Command Line Interface Guidelines](https://clig.dev/)
