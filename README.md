@@ -6,8 +6,7 @@ Example Python Project showcasing best practices in configuration, logging, test
 1. Run `uv tool install cookiecutter`
 2. Move to your `repos` directory
 3. Run `uvx cookiecutter gh:cmgoffena13/project-template` to create the project folder
-4. Run `git init` within the project folder
-5. Run `make install`
+4. Run `make install` within the project folder
 
 ## Development Tools
  - `uv`: manage python versions, package dependencies, and environments
