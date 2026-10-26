@@ -5,15 +5,25 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "azure-identity>=1.25.1",
-    "azure-keyvault-secrets>=4.10.0",
-    "boto3>=1.41.5",
-    "google-cloud-secret-manager>=2.25.0",
-    "opentelemetry-exporter-otlp-proto-http>=1.38.0",
-    "opentelemetry-sdk>=1.38.0",
-    "pydantic>=2.13.4",
-    "pydantic-settings>=2.12.0",
+    "azure-identity>=1.26.0",
+    "azure-keyvault-secrets>=4.11.3",
+    "boto3>=1.43.114",
+    "google-cloud-secret-manager>=2.31.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.45.1",
+    "opentelemetry-sdk>=1.45.1",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.0",
     "structlog>=26.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "prek>=0.5.5",
+    "pytest>=9.0.1",
+    "pytest-cov>=7.1.0",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.17.1",
+    "ty>=0.0.89",
 ]
 
 [tool.pytest.ini_options]
@@ -52,16 +62,6 @@ lint.extend-select = [
 
 [tool.ruff.lint.per-file-ignores]
 "test_*.py" = ["S101"]  # Proper use of assert
-
-[dependency-groups]
-dev = [
-    "prek>=0.3.8",
-    "pytest>=9.0.1",
-    "pytest-cov>=7.1.0",
-    "pytest-xdist>=3.8.0",
-    "ruff>=0.14.4",
-    "ty>=0.0.26",
-]
 
 [tool.uv]
 exclude-newer = "7 days"  # Skip packages uploaded in the last 7 days (supply-chain cooldown).
