@@ -1,9 +1,9 @@
 [project]
-name = "modern-python-project-template"
+name = "{{ cookiecutter.project_name }}"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">={{ cookiecutter.python_version }}"
 dependencies = [
     "azure-identity>=1.26.0",
     "azure-keyvault-secrets>=4.11.3",
@@ -37,7 +37,7 @@ omit = ["src/tests/*"]
 fail_under = 90
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py{{ cookiecutter.python_version | replace('.', '') }}"
 line-length = 100
 force-exclude = true  # Honor exclude on pre-commit pass filenames
 lint.extend-select = [

@@ -1,5 +1,5 @@
-ARG UV_VERSION=0.13.5
-ARG PYTHON_VERSION=3.12
+ARG UV_VERSION={{ cookiecutter.uv_version }}
+ARG PYTHON_VERSION={{ cookiecutter.python_version }}
 ARG UV_IMAGE_TYPE=trixie-slim
 ARG IMAGE_TYPE=slim-trixie
 
@@ -30,4 +30,4 @@ WORKDIR /app
 COPY --from=builder --chown=appuser:appgroup /app /app
 
 USER appuser
-CMD ["python", "main.py"]
+CMD ["python", "-m", "src.main"]

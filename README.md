@@ -2,6 +2,11 @@
 
 Example Python Project showcasing best practices in configuration, logging, testing, and CI/CD.
 
+## CookieCutter Setup
+1. Run `uv tool install cookiecutter`
+2. Move to your `repos` directory
+3. Run `uvx cookiecutter gh:cmgoffena13/project-template` to create the project folder
+
 ## Development Tools
  - `uv`: manage python versions, package dependencies, and environments
  - `ruff`: format code & lint code to enforce best practices

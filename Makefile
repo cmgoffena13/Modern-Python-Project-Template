@@ -6,6 +6,7 @@ install:
 	cp .env.example .env
 
 clean:
+	rm -rf __pycache__/
 	rm -rf .pytest_cache
 	rm -rf .ruff_cache
 	rm -f .coverage
@@ -35,4 +36,4 @@ test-cov:
 	uv run -- pytest -v -n auto --cov=src --cov-report=term-missing
 
 run:
-	uv run main.py
+	uv run -- python -m src.main

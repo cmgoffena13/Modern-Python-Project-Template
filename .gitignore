@@ -5,6 +5,7 @@ __pycache__/
 
 # JSON (JSON has no place here) - GCP Credentials, etc.
 *.json
+!cookiecutter.json
 
 # C extensions
 *.so
