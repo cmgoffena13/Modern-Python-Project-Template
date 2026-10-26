@@ -7,10 +7,7 @@ install:
 	cp .env.example .env
 
 clean:
-	rm -rf __pycache__/
-	rm -rf .pytest_cache
-	rm -rf .ruff_cache
-	rm -f .coverage
+	rm -rf __pycache__ .pytest_cache .ruff_cache .coverage
 
 reset: clean
 	uv venv --clear
