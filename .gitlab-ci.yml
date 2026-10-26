@@ -1,0 +1,144 @@
+# ---- STAGES ----
+stages:
+  - warm-uv-cache
+  - code-quality
+  - build
+  - deploy
+
+# ---- VARIABLES ----
+variables:
+  UV_VERSION: "{{cookiecutter.uv_version}}"
+  PYTHON_VERSION: "{{cookiecutter.python_version}}"
+  BASE_LAYER: "trixie-slim"
+  UV_LINK_MODE: copy
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv-cache"
+  KANIKO_VERSION: "v1.28.2-debug"
+  MAIN_BRANCH_NAME: "main"
+  SERVICE_NAME: "{{cookiecutter.project_name}}"
+  # Image Repository to push to
+  IMAGE_REPO: ""
+  # Image needed to run deploy commands
+  DOCKER_DEPLOY_IMAGE: ""
+
+# ---- BASE TEMPLATES ----
+.kaniko-base:
+  image:
+    name: ghcr.io/osscontainertools/kaniko:${KANIKO_VERSION}
+    entrypoint: [""]
+  stage: build
+  retry: 2
+  before_script:
+    - print "Building with Kaniko ${KANIKO_VERSION}"
+  variables:
+    KANIKO_ARGS: >-
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --cache=true
+      --cache-copy-layers
+      --cache-repo ${IMAGE_REPO}/cache
+      --snapshot-mode=redo
+      --push-retry=2
+      --cleanup
+
+.uv-base:
+  image: ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-${BASE_LAYER}
+  cache:
+    key:
+      files:
+        - uv.lock
+    paths:
+      - .uv-cache
+    policy: pull
+  before_script:
+    - uv lock --check
+    - uv sync --frozen
+
+# ---- WARM UV CACHE ----
+update-uv-cache:
+  extends: .uv-base
+  stage: warm-uv-cache
+  cache:
+    policy: pull-push
+  script:
+    - uv cache prune --ci
+
+# ---- CODE QUALITY ----
+format:
+  extends: .uv-base
+  stage: code-quality
+  script:
+    - uv run --no-sync -- ruff format --check .
+
+lint:
+  extends: .uv-base
+  stage: code-quality
+  script:
+    - uv run --no-sync -- ruff check .
+
+type-check:
+  extends: .uv-base
+  stage: code-quality
+  script:
+    - uv run --no-sync -- ty check .
+
+test:
+  extends: .uv-base
+  stage: code-quality
+  rules:
+    # Don't run on merge requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    # Don't run on main branch
+    - if: '$CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME'
+      when: never
+    # Run on non-main branch push pipelines
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  script:
+    - uv run --no-sync -- pytest -v -n auto
+
+test-coverage:
+  extends: .uv-base
+  stage: code-quality
+  rules:
+    # Run on Open MRs
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # Run on main branch push / Merges
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME'
+  script:
+    - >-
+      uv run --no-sync -- pytest -v -n auto
+      --cov
+      --cov-report=term-missing
+      --cov-report=xml:coverage.xml
+  coverage: '/^TOTAL.*?(\d+\.\d+)?)%'
+  artifacts:
+    expire_in: 1 day
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
+# ---- BUILD ----
+build:
+  extends: .kaniko-base
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == ${MAIN_BRANCH_NAME} && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE =~ /^Merge branch/''
+      when: always
+    script:
+      - /kaniko/executor $KANIKO_ARGS
+        --destination "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA}"
+        --destination "${IMAGE_REPO}:latest"
+
+# ---- DEPLOY ----
+DeployDockerImage:
+  stage: deploy
+  image: ${DOCKER_DEPLOY_IMAGE}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $MAIN_BRANCH_NAME && $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE =~ /^Merge branch/'
+      when: always
+  before_script:
+    - print "Deploying Docker Image for $CI_COMMIT_SHORT_SHA..."
+  retry: 2
+  script:
+    - echo "Deploy Stuff Goes Here..."
