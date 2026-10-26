@@ -1,9 +1,21 @@
-.PHONY: ready format lint type-check test test-cov install upgrade run
+.PHONY: ready format lint type-check test test-cov install upgrade run clean reset
 
 install:
 	uv sync --all-extras
 	uv run -- prek install
 	cp .env.example .env
+
+clean:
+	rm -rf .pytest_cache
+	rm -rf .ruff_cache
+	rm -f .coverage
+
+reset: clean
+	uv venv --clear
+	$(MAKE) install
+
+upgrade:
+	uv sync --upgrade --all-extras
 
 ready: lint format type-check test-cov
 
@@ -21,9 +33,6 @@ test:
 
 test-cov:
 	uv run -- pytest -v -n auto --cov=src --cov-report=term-missing
-
-upgrade:
-	uv sync --upgrade --all-extras
 
 run:
 	uv run main.py

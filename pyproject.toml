@@ -29,8 +29,7 @@ fail_under = 90
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-# Honor exclude on pre-commit pass filenames
-force-exclude = true
+force-exclude = true  # Honor exclude on pre-commit pass filenames
 lint.extend-select = [
     "A",     # Builtins
     "AIR",   # Optional: Airflow
@@ -64,6 +63,5 @@ dev = [
     "ty>=0.0.26",
 ]
 
-# Skip packages uploaded in the last 7 days (supply-chain cooldown).
 [tool.uv]
-exclude-newer = "7 days"
+exclude-newer = "7 days"  # Skip packages uploaded in the last 7 days (supply-chain cooldown).
