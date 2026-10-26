@@ -7,7 +7,7 @@
  - All lowercase
 
 Prefixes:
- - feature
+ - feat
  - fix
     - hotfix
  - refactor
@@ -16,7 +16,7 @@ Prefixes:
 
 Format: {prefix}/{name}
 
-Example: `feature/paypal-sync`
+Example: `feat/paypal-sync`
 
 ### Commit Standards
 
