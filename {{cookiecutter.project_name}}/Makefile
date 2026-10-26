@@ -1,6 +1,7 @@
 .PHONY: ready format lint type-check test test-cov install upgrade run clean reset
 
 install:
+	git init
 	uv sync --all-extras
 	uv run -- prek install
 	cp .env.example .env
